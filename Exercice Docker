@@ -330,4 +330,51 @@ ubuntu:latest                   186072bba1b2        119MB         31.7MB
 ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice2$
 
 
+exercice 3 : 
+
+3.1
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps$ mkdir exercice3
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps$ cd exercice
+-bash: cd: exercice: No such file or directory
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps$ cd exercice3
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3$ ls
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3$ docker run -it --rm alpine sh
+Unable to find image 'alpine:latest' locally
+latest: Pulling from library/alpine
+4e0cb4ac63e7: Download complete
+a63813f19ccb: Download complete
+Digest: sha256:5b10f432ef3da1b8d4c7eb6c487f2f5a8f096bc91145e68878dd4a5019afde11
+Status: Downloaded newer image for alpine:latest
+/ # mkdir /data
+/ # echo "bonjour" > /data/test.txt
+/ # cat /d
+data/  dev/
+/ # cat /data/test.txt
+bonjour
+/ #
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3$ docker run -it --rm alpine sh
+/ # cat /data/test.txt
+cat: can't open '/data/test.txt': No such file or directory
+/ # exit
+Par défaut, les données stockées dans un conteneur Docker ne sont pas persistantes et sont perdues lors de la suppression du conteneur
+
+3.2
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3$ mkdir html
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3$ cd html/
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3/html$ vi index.html
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3/html$ docker run -d --rm \
+  --name nginx-bind \
+  -p 8081:80 \
+  -v ~/DevOps/exercice3/html:/usr/share/nginx/html \
+  nginx:alpine
+5c58589a87ee2883e8cc0f2aa78ca8d56cd8bec767fcfe887bf8d1791a3b74fd
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3/html$ curl http://localhost:8081
+<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8"><title>Bind Mount</title></head>
+<body><h1>Version 1 — Bind Mount</h1></body>
+</html>
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3/html$
+
+
 
