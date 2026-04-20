@@ -126,5 +126,6 @@ efcfb974fbc4   portainer/portainer-ce:latest   "/portainer"             2 weeks 
 6f17d67181ca   nginx:latest                    "/docker-entrypoint.…"   2 weeks ago      Exited (0) 2 weeks ago                                                                        nginx-server
 ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps$
 
+Exercice 2 : 
 
 
