@@ -215,3 +215,55 @@ nginx:alpine                    5616878291a2       93.5MB         26.9MB
 
 mon-site:v1 et nginx:alpine ont quasiment la même taille, ce qui est tout à fait normal. Notre image mon-site:v1 est construite à partir de nginx:alpine — elle hérite donc de tous ses layers, auxquels on a ajouté uniquement notre fichier index.html (quelques centaines d'octets).
 La légère différence affichée dans DISK USAGE est due à la façon dont Docker comptabilise les layers partagés sur le disque : il ne les compte pas en double. En réalité, le seul "vrai" ajout de notre Dockerfile est le COPY index.html, qui ne pèse presque rien.
+
+2.6
+on est passer de 20 a 22 : 
+- 89dc60899772   4 hours ago   EXPOSE [80/tcp] 
+- <missing>      4 hours ago   COPY index.html /usr/share/nginx/html/index.…
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice2$ docker history mon-site:v1
+IMAGE          CREATED       CREATED BY                                      SIZE      COMMENT
+89dc60899772   4 hours ago   EXPOSE [80/tcp]                                 0B        buildkit.dockerfile.v0
+<missing>      4 hours ago   COPY index.html /usr/share/nginx/html/index.…   24.6kB    buildkit.dockerfile.v0
+<missing>      4 days ago    RUN /bin/sh -c set -x     && apkArch="$(cat …   51.8MB    buildkit.dockerfile.v0
+<missing>      4 days ago    ENV ACME_VERSION=0.3.1                          0B        buildkit.dockerfile.v0
+<missing>      4 days ago    ENV NJS_RELEASE=1                               0B        buildkit.dockerfile.v0
+<missing>      4 days ago    ENV NJS_VERSION=0.9.6                           0B        buildkit.dockerfile.v0
+<missing>      4 days ago    CMD ["nginx" "-g" "daemon off;"]                0B        buildkit.dockerfile.v0
+<missing>      4 days ago    STOPSIGNAL SIGQUIT                              0B        buildkit.dockerfile.v0
+<missing>      4 days ago    EXPOSE map[80/tcp:{}]                           0B        buildkit.dockerfile.v0
+<missing>      4 days ago    ENTRYPOINT ["/docker-entrypoint.sh"]            0B        buildkit.dockerfile.v0
+<missing>      4 days ago    COPY 30-tune-worker-processes.sh /docker-ent…   16.4kB    buildkit.dockerfile.v0
+<missing>      4 days ago    COPY 20-envsubst-on-templates.sh /docker-ent…   12.3kB    buildkit.dockerfile.v0
+<missing>      4 days ago    COPY 15-local-resolvers.envsh /docker-entryp…   12.3kB    buildkit.dockerfile.v0
+<missing>      4 days ago    COPY 10-listen-on-ipv6-by-default.sh /docker…   12.3kB    buildkit.dockerfile.v0
+<missing>      4 days ago    COPY docker-entrypoint.sh / # buildkit          8.19kB    buildkit.dockerfile.v0
+<missing>      4 days ago    RUN /bin/sh -c set -x     && addgroup -g 101…   5.59MB    buildkit.dockerfile.v0
+<missing>      4 days ago    ENV DYNPKG_RELEASE=1                            0B        buildkit.dockerfile.v0
+<missing>      4 days ago    ENV PKG_RELEASE=1                               0B        buildkit.dockerfile.v0
+<missing>      4 days ago    ENV NGINX_VERSION=1.29.8                        0B        buildkit.dockerfile.v0
+<missing>      4 days ago    LABEL maintainer=NGINX Docker Maintainers <d…   0B        buildkit.dockerfile.v0
+<missing>      4 days ago    CMD ["/bin/sh"]                                 0B        buildkit.dockerfile.v0
+<missing>      4 days ago    ADD alpine-minirootfs-3.23.4-x86_64.tar.gz /…   9.11MB    buildkit.dockerfile.v0
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice2$ docker history nginx:alpine
+IMAGE          CREATED      CREATED BY                                      SIZE      COMMENT
+5616878291a2   4 days ago   RUN /bin/sh -c set -x     && apkArch="$(cat …   51.8MB    buildkit.dockerfile.v0
+<missing>      4 days ago   ENV ACME_VERSION=0.3.1                          0B        buildkit.dockerfile.v0
+<missing>      4 days ago   ENV NJS_RELEASE=1                               0B        buildkit.dockerfile.v0
+<missing>      4 days ago   ENV NJS_VERSION=0.9.6                           0B        buildkit.dockerfile.v0
+<missing>      4 days ago   CMD ["nginx" "-g" "daemon off;"]                0B        buildkit.dockerfile.v0
+<missing>      4 days ago   STOPSIGNAL SIGQUIT                              0B        buildkit.dockerfile.v0
+<missing>      4 days ago   EXPOSE map[80/tcp:{}]                           0B        buildkit.dockerfile.v0
+<missing>      4 days ago   ENTRYPOINT ["/docker-entrypoint.sh"]            0B        buildkit.dockerfile.v0
+<missing>      4 days ago   COPY 30-tune-worker-processes.sh /docker-ent…   16.4kB    buildkit.dockerfile.v0
+<missing>      4 days ago   COPY 20-envsubst-on-templates.sh /docker-ent…   12.3kB    buildkit.dockerfile.v0
+<missing>      4 days ago   COPY 15-local-resolvers.envsh /docker-entryp…   12.3kB    buildkit.dockerfile.v0
+<missing>      4 days ago   COPY 10-listen-on-ipv6-by-default.sh /docker…   12.3kB    buildkit.dockerfile.v0
+<missing>      4 days ago   COPY docker-entrypoint.sh / # buildkit          8.19kB    buildkit.dockerfile.v0
+<missing>      4 days ago   RUN /bin/sh -c set -x     && addgroup -g 101…   5.59MB    buildkit.dockerfile.v0
+<missing>      4 days ago   ENV DYNPKG_RELEASE=1                            0B        buildkit.dockerfile.v0
+<missing>      4 days ago   ENV PKG_RELEASE=1                               0B        buildkit.dockerfile.v0
+<missing>      4 days ago   ENV NGINX_VERSION=1.29.8                        0B        buildkit.dockerfile.v0
+<missing>      4 days ago   LABEL maintainer=NGINX Docker Maintainers <d…   0B        buildkit.dockerfile.v0
+<missing>      4 days ago   CMD ["/bin/sh"]                                 0B        buildkit.dockerfile.v0
+<missing>      4 days ago   ADD alpine-minirootfs-3.23.4-x86_64.tar.gz /…   9.11MB    buildkit.dockerfile.v0
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice2$
