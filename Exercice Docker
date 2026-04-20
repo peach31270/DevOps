@@ -267,3 +267,67 @@ IMAGE          CREATED      CREATED BY                                      SIZE
 <missing>      4 days ago   CMD ["/bin/sh"]                                 0B        buildkit.dockerfile.v0
 <missing>      4 days ago   ADD alpine-minirootfs-3.23.4-x86_64.tar.gz /…   9.11MB    buildkit.dockerfile.v0
 ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice2$
+
+2.7
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice2$ vi index.html
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice2$ docker build -t mon-site:v2 .
+[+] Building 0.3s (7/7) FINISHED                                  docker:default
+ => [internal] load build definition from Dockerfile                        0.0s
+ => => transferring dockerfile: 117B                                        0.0s
+ => [internal] load metadata for docker.io/library/nginx:alpine             0.0s
+ => [internal] load .dockerignore                                           0.0s
+ => => transferring context: 2B                                             0.0s
+ => [internal] load build context                                           0.0s
+ => => transferring context: 207B                                           0.0s
+ => CACHED [1/2] FROM docker.io/library/nginx:alpine@sha256:5616878291a2ee  0.0s
+ => => resolve docker.io/library/nginx:alpine@sha256:5616878291a2eed594aee  0.0s
+ => [2/2] COPY index.html /usr/share/nginx/html/index.html                  0.0s
+ => exporting to image                                                      0.1s
+ => => exporting layers                                                     0.0s
+ => => exporting manifest sha256:970b58725fbe219e33a32832a71e4a7c36d7cf358  0.0s
+ => => exporting config sha256:cfc5719c63a476374aea28db796d69f14967e25a8a3  0.0s
+ => => exporting attestation manifest sha256:90f984ef362ca0f4b15809c7ba633  0.0s
+ => => exporting manifest list sha256:e59209ad9ca926197bd75cf91ee84707f2ae  0.0s
+ => => naming to docker.io/library/mon-site:v2                              0.0s
+ => => unpacking to docker.io/library/mon-site:v2                           0.0s
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice2$
+
+Étape chargée depuis le cache → FROM nginx:alpine
+Étape réexécutée → COPY index.html
+
+2.8
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice2$ docker images
+                                                             i Info →   U  In Use
+IMAGE                           ID             DISK USAGE   CONTENT SIZE   EXTRA
+hello-world:latest              452a468a4bf9       25.9kB         9.49kB    U
+libra:basic-latest              a11b31f68457       1.92GB          550MB
+libra:latest                    536783d84916        148MB         40.2MB
+libra:multi-stages-latest       a2e5b3b2d90e       24.6MB         8.69MB
+libra:v0.0.3                    04e8cb78caf3        148MB         40.2MB
+minio/minio:latest              14cea493d9a3        241MB         62.2MB
+mon-site:v1                     89dc60899772       92.6MB           26MB
+mon-site:v2                     e59209ad9ca9       92.6MB           26MB
+nginx:alpine                    5616878291a2       93.5MB         26.9MB
+nginx:latest                    7150b3a39203        240MB         65.8MB    U
+portainer/portainer-ce:latest   1ae8e65d50ca        240MB           59MB    U
+ubuntu:latest                   186072bba1b2        119MB         31.7MB
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice2$ docker rmi mon-site:v1
+Untagged: mon-site:v1
+Deleted: sha256:89dc608997727556da1b4407facc8497b70e072035576869306052337c29b4c1
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice2$ docker images                                                               i Info →   U  In Use
+IMAGE                           ID             DISK USAGE   CONTENT SIZE   EXTRA
+hello-world:latest              452a468a4bf9       25.9kB         9.49kB    U
+libra:basic-latest              a11b31f68457       1.92GB          550MB
+libra:latest                    536783d84916        148MB         40.2MB
+libra:multi-stages-latest       a2e5b3b2d90e       24.6MB         8.69MB
+libra:v0.0.3                    04e8cb78caf3        148MB         40.2MB
+minio/minio:latest              14cea493d9a3        241MB         62.2MB
+mon-site:v2                     e59209ad9ca9       92.6MB           26MB
+nginx:alpine                    5616878291a2       93.5MB         26.9MB
+nginx:latest                    7150b3a39203        240MB         65.8MB    U
+portainer/portainer-ce:latest   1ae8e65d50ca        240MB           59MB    U
+ubuntu:latest                   186072bba1b2        119MB         31.7MB
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice2$
+
+
+
