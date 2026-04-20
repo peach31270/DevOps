@@ -127,5 +127,91 @@ efcfb974fbc4   portainer/portainer-ce:latest   "/portainer"             2 weeks 
 ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps$
 
 Exercice 2 : 
+2.1 
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps$ mkdir exercice2
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps$ cd exercice2/
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice2$ vi html
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice2$ cat index.html
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Ma première image Docker</title>
+</head>
+<body>
+    <h1>Thomas</h1>
+</body>
+</html>
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice2$
 
+2.2
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice2$ cat Dockerfile
+FROM nginx:alpine
 
+COPY index.html /usr/share/nginx/html/index.html
+
+EXPOSE 80
+
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice2$
+
+2.3
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice2$ docker build -t mon-site:v1 .
+[+] Building 0.4s (7/7) FINISHED                                docker:default
+ => [internal] load build definition from Dockerfile                      0.0s
+ => => transferring dockerfile: 117B                                      0.0s
+ => [internal] load metadata for docker.io/library/nginx:alpine           0.0s
+ => [internal] load .dockerignore                                         0.0s
+ => => transferring context: 2B                                           0.0s
+ => [internal] load build context                                         0.0s
+ => => transferring context: 202B                                         0.0s
+ => [1/2] FROM docker.io/library/nginx:alpine@sha256:5616878291a2eed594a  0.1s
+ => => resolve docker.io/library/nginx:alpine@sha256:5616878291a2eed594a  0.0s
+ => [2/2] COPY index.html /usr/share/nginx/html/index.html                0.0s
+ => exporting to image                                                    0.1s
+ => => exporting layers                                                   0.0s
+ => => exporting manifest sha256:6681064086a08a1168a2c92af4283978f99a484  0.0s
+ => => exporting config sha256:6f18696cb2450d119d9211a81c1d815bd94822ccf  0.0s
+ => => exporting attestation manifest sha256:f2f0addc6af93155a5d6b5e85ee  0.0s
+ => => exporting manifest list sha256:89dc608997727556da1b4407facc8497b7  0.0s
+ => => naming to docker.io/library/mon-site:v1                            0.0s
+ => => unpacking to docker.io/library/mon-site:v1                         0.0s
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:
+
+2.4
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice2$ docker run --rm -d -p 9090:80 --name mon-site mon-site:v1
+856dbead2b185482683a8721b0816839c012ed9fca124f762dddf15c929e944d
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice2$ curl http://localhost:9090
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Ma première image Docker</title>
+</head>
+<body>
+    <h1>Thomas</h1>
+</body>
+</html>
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice2$
+
+2.5
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice2$ docker images
+
+IMAGE                           ID             DISK USAGE   CONTENT SIZE   EXTR
+hello-world:latest              452a468a4bf9       25.9kB         9.49kB    U
+libra:basic-latest              a11b31f68457       1.92GB          550MB
+libra:latest                    536783d84916        148MB         40.2MB
+libra:multi-stages-latest       a2e5b3b2d90e       24.6MB         8.69MB
+libra:v0.0.3                    04e8cb78caf3        148MB         40.2MB
+minio/minio:latest              14cea493d9a3        241MB         62.2MB
+mon-site:v1                     89dc60899772       92.6MB           26MB    U
+nginx:alpine                    5616878291a2       93.5MB         26.9MB
+nginx:latest                    7150b3a39203        240MB         65.8MB    U
+portainer/portainer-ce:latest   1ae8e65d50ca        240MB           59MB    U
+ubuntu:latest                   186072bba1b2        119MB         31.7MB
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice2$
+
+mon-site:v1                     89dc60899772       92.6MB           26MB    U
+nginx:alpine                    5616878291a2       93.5MB         26.9MB
+
+mon-site:v1 et nginx:alpine ont quasiment la même taille, ce qui est tout à fait normal. Notre image mon-site:v1 est construite à partir de nginx:alpine — elle hérite donc de tous ses layers, auxquels on a ajouté uniquement notre fichier index.html (quelques centaines d'octets).
+La légère différence affichée dans DISK USAGE est due à la façon dont Docker comptabilise les layers partagés sur le disque : il ne les compte pas en double. En réalité, le seul "vrai" ajout de notre Dockerfile est le COPY index.html, qui ne pèse presque rien.
