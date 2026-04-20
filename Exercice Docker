@@ -330,7 +330,7 @@ ubuntu:latest                   186072bba1b2        119MB         31.7MB
 ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice2$
 
 
-exercice 3 : 
+Exercice 3 : 
 
 3.1
 ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps$ mkdir exercice3
@@ -411,3 +411,64 @@ je survis
 ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3/html$
 
 Le fichier existe toujours, même si c'est un conteneur complètement différent. Les données sont dans le volume, et Docker s'occupe de la gestion du chemin.
+
+3.6
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3/html$ docker volume ls
+DRIVER    VOLUME NAME
+local     749a980b3510ed6ee57b44565b6c202045669fcc4c7f7b34fdbcbac1e13eba69
+local     8431896-optimisez-votre-deploiement-en-creant-des-conteneurs-avec-docker_minio_storage
+local     bc5f7b6faa9509625242a0834753be9e89dd7a2e84a097fd022f2b60916e8de7
+local     f27923900bd957848091c0994ecfc28206d5d164ebd8179e1d7453b706b89a29
+local     mes-donnees
+local     mes-donnes
+local     portainer_data
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3/html$
+
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3/html$ docker volume ls
+DRIVER    VOLUME NAME
+local     749a980b3510ed6ee57b44565b6c202045669fcc4c7f7b34fdbcbac1e13eba69
+local     8431896-optimisez-votre-deploiement-en-creant-des-conteneurs-avec-docker_minio_storage
+local     bc5f7b6faa9509625242a0834753be9e89dd7a2e84a097fd022f2b60916e8de7
+local     f27923900bd957848091c0994ecfc28206d5d164ebd8179e1d7453b706b89a29
+local     mes-donnees
+local     mes-donnes
+local     portainer_data
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3/html$ ^C
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3/html$ docker volume inspect mes-donnees
+[
+    {
+        "CreatedAt": "2026-04-20T18:49:17Z",
+        "Driver": "local",
+        "Labels": null,
+        "Mountpoint": "/var/lib/docker/volumes/mes-donnees/_data",
+        "Name": "mes-donnees",
+        "Options": null,
+        "Scope": "local"
+    }
+]
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3/html$
+Ils sont stockés dans : "Mountpoint": "/var/lib/docker/volumes/mes-donnees/_data"
+
+3.7
+Il faut d'abrd vérifier que aucun container l'utilise.
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3/html$ docker ps -a
+CONTAINER ID   IMAGE                           COMMAND                  CREATED          STATUS                   PORTS                                                             NAMES
+5c58589a87ee   nginx:alpine                    "/docker-entrypoint.…"   23 minutes ago   Up 23 minutes            0.0.0.0:8081->80/tcp, [::]:8081->80/tcp                           nginx-bind
+803ef58dfac4   hello-world                     "/hello"                 6 hours ago      Exited (0) 6 hours ago                                                                     peaceful_gates
+efcfb974fbc4   portainer/portainer-ce:latest   "/portainer"             2 weeks ago      Up 6 hours               8000/tcp, 9443/tcp, 0.0.0.0:9000->9000/tcp, [::]:9000->9000/tcp   portainer
+6f17d67181ca   nginx:latest                    "/docker-entrypoint.…"   2 weeks ago      Exited (0) 2 weeks ago                                                                     nginx-server
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3/html$ docker volume rm mes-donnes
+mes-donnes
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3/html$ docker volume rm mes-donnees
+mes-donnees
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3/html$ docker volume ls
+DRIVER    VOLUME NAME
+local     749a980b3510ed6ee57b44565b6c202045669fcc4c7f7b34fdbcbac1e13eba69
+local     8431896-optimisez-votre-deploiement-en-creant-des-conteneurs-avec-docker_minio_storage
+local     bc5f7b6faa9509625242a0834753be9e89dd7a2e84a097fd022f2b60916e8de7
+local     f27923900bd957848091c0994ecfc28206d5d164ebd8179e1d7453b706b89a29
+local     portainer_data
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3/html$
+
+Exercice 4 : 
+
