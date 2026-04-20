@@ -375,6 +375,14 @@ ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3/html$ curl http
 <body><h1>Version 1 — Bind Mount</h1></body>
 </html>
 ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3/html$
-
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3/html$ vi index.html
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3/html$ curl http://localhost:8081
+<!DOCTYPE html>
+<html lang="fr">
+<head><meta charset="UTF-8"><title>Bind Mount</title></head>
+<body><h1>Version 2 — Bind Mount</h1></body>
+</html>
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3/html$
+La modification a été directement prise en compte
 
 
