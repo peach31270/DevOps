@@ -385,4 +385,29 @@ ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3/html$ curl http
 ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3/html$
 La modification a été directement prise en compte
 
+3.3
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3/html$ docker volume create mes-donnees
+mes-donnees
 
+3.4
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3/html$ docker run -it --rm -v mes-donnes:/data alpine sh
+/ # echo "je survis" > /data/persistant.txt
+/ # cat /data/persistant.txt
+je survis
+/ # exit
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3/html$
+
+3.5
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3/html$ docker run -it --rm -v mes-donnes:/data alpine sh
+/ # echo "je survis" > /data/persistant.txt
+/ # cat /data/persistant.txt
+je survis
+/ # exit
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3/html$ ^C
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3/html$ docker run -it --rm -v mes-donnes:/data alpine sh
+/ # cat /data/persistant.txt
+je survis
+/ # exit
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3/html$
+
+Le fichier existe toujours, même si c'est un conteneur complètement différent. Les données sont dans le volume, et Docker s'occupe de la gestion du chemin.
