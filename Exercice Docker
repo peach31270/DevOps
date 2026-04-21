@@ -471,4 +471,21 @@ local     portainer_data
 ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice3/html$
 
 Exercice 4 : 
+4.1
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice4$ docker network ls
+NETWORK ID     NAME             DRIVER    SCOPE
+94f8779f5e15   bridge           bridge    local
+df52c044dfa5   host             host      local
+5c403b0e1900   none             null      local
+2e737d3562e3   ubuntu_default   bridge    local
+
+On a bridge , réseau par défaut, et ils ont leur propre réseau 
+on a host ,  il partage l'interface réseau de la machine hote 
+et none , pas de réseau , conteneurs isolé 
+
+4.2
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice4$ docker network create mon-reseau
+987b0981c46b5dca590e9dcfe388f4510026eac668956048a8500b22b3b45c04
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice4$
+
 
