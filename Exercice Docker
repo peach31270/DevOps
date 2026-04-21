@@ -678,8 +678,48 @@ ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice5$
 
 
 5.5
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice5$ docker run -d --name flask-prod -p 5000:5000 -e APP_ENV=production flask-app:v1
+64511e1a87b6fd8997b03a48fbed834dc7828a58556f788bd55cc1e2bd6bf4a4
+
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice5$ curl http://localhost:5000
+<h1>Flask fonctionne !</h1><p>Environnement : développement</p>ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice5$
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice5$ curl http://localhost:5000/health
+{"status":"ok"}
+
 
 5.6
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice5$ docker run -d --name flask-dev -p 5000:5000 flask-app:v1
+132a10c8b88da5453294498357132b4d9721894c7552289f58951330b86ed33e
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice5$ curl http://localhost:5000/
+<h1>Flask fonctionne !</h1><p>Environnement : développement</p>ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice5$
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice5$ curl http://localhost:5000/health
+{"status":"ok"}
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice5$
+
+Elle récupère les infos du fichier app.py :    env = os.environ.get("APP_ENV", "développement")
+
 
 5.7
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice5$ docker images
+                                                                          i Info →   U  In Use
+IMAGE                           ID             DISK USAGE   CONTENT SIZE   EXTRA
+alpine:latest                   5b10f432ef3d       13.1MB         3.95MB
+flask-app:v1                    308d43a00821        197MB         48.1MB    U
+hello-world:latest              452a468a4bf9       25.9kB         9.49kB    U
+libra:basic-latest              a11b31f68457       1.92GB          550MB
+libra:latest                    536783d84916        148MB         40.2MB
+libra:multi-stages-latest       a2e5b3b2d90e       24.6MB         8.69MB
+libra:v0.0.3                    04e8cb78caf3        148MB         40.2MB
+minio/minio:latest              14cea493d9a3        241MB         62.2MB
+mon-site:v2                     e59209ad9ca9       92.6MB           26MB
+nginx:alpine                    5616878291a2       93.5MB         26.9MB    U
+nginx:latest                    7150b3a39203        240MB         65.8MB    U
+portainer/portainer-ce:latest   1ae8e65d50ca        240MB           59MB    U
+ubuntu:latest                   186072bba1b2        119MB         31.7MB
+
+flask-app:v1                    308d43a00821        197MB         48.1MB
+
+on peut utiliser python:3.12-alpine au lieu de python:3.12-slim car plus légère
+Ajouter un .dockerignore
+Sans .dockerignore, le COPY . . copie tout le dossier dans l'image, y compris des fichiers inutiles en production.
 
