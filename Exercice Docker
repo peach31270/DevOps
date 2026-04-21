@@ -593,5 +593,93 @@ ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice4$
 
 
 Exercice 5 : 
+5.1
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice5$ touch requirements.txt
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice5$ touch app.py
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice5$ ls
+Dockerfile  app.py  requirements.txt
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice5$ vi app.py
+from flask import Flask
+import os
 
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    env = os.environ.get("APP_ENV", "développement")
+    return f"<h1>Flask fonctionne !</h1><p>Environnement : {env}</p>"
+
+@app.route("/health")
+def health():
+    return {"status": "ok"}, 200
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000)
+~
+
+
+5.2
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice5$ vi requirements.txt
+Flask==3.0.3
+
+5.3
+FROM python:3.12-slim
+
+WORKDIR /app
+
+COPY requirements.tkt .
+
+RUN pip install --no-cache-dir -r requirements.tkt
+
+COPY . .
+
+EXPOSE 5000
+
+ENV FLASK_APP=app.py
+
+CMD ["flask", "run", "--host=0.0.0.0"]
+
+ce qui change rarement (dépendances) va en haut, ce qui change souvent (ton code) va en bas pour éviter de devoir tout rééxecuter.
+
+
+5.4
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice5$ docker build -t flask-app:v1 .
+[+] Building 6.1s (10/10) FINISHED                                             docker:default
+ => [internal] load build definition from Dockerfile                                     0.0s
+ => => transferring dockerfile: 239B                                                     0.0s
+ => [internal] load metadata for docker.io/library/python:3.12-slim                      0.4s
+ => [internal] load .dockerignore                                                        0.0s
+ => => transferring context: 2B                                                          0.0s
+ => [1/5] FROM docker.io/library/python:3.12-slim@sha256:804ddf3251a60bbf9c92e73b7566c4  2.3s
+ => => resolve docker.io/library/python:3.12-slim@sha256:804ddf3251a60bbf9c92e73b7566c4  0.0s
+ => => sha256:f0bdb572205ec70132c0fbc66a335ee5fd1614c08d686e8e921a9f55a6c38 250B / 250B  0.2s
+ => => sha256:d4c207a1ca273594af4c026252870b4b165d536b3cb53b1246d6805 12.11MB / 12.11MB  0.6s
+ => => sha256:25981ed25cff34d7d714ea438c95731e427ea9827b771ed102d6e0fc3 1.29MB / 1.29MB  0.4s
+ => => sha256:5435b2dcdf5cb7faa0d5b1d4d54be2c72a776fab9a605336f5067d6 29.78MB / 29.78MB  1.0s
+ => => extracting sha256:5435b2dcdf5cb7faa0d5b1d4d54be2c72a776fab9a605336f5067d6e9ecb59  0.7s
+ => => extracting sha256:25981ed25cff34d7d714ea438c95731e427ea9827b771ed102d6e0fc30eeab  0.1s
+ => => extracting sha256:d4c207a1ca273594af4c026252870b4b165d536b3cb53b1246d6805e4e6b34  0.4s
+ => => extracting sha256:f0bdb572205ec70132c0fbc66a335ee5fd1614c08d686e8e921a9f55a6c38b  0.0s
+ => [internal] load build context                                                        0.0s
+ => => transferring context: 300B                                                        0.0s
+ => [2/5] WORKDIR /app                                                                   0.1s
+ => [3/5] COPY requirements.txt .                                                        0.0s
+ => [4/5] RUN pip install --no-cache-dir -r requirements.txt                             2.3s
+ => [5/5] COPY . .                                                                       0.0s
+ => exporting to image                                                                   0.9s
+ => => exporting layers                                                                  0.6s
+ => => exporting manifest sha256:2a32e4d3cec97482fc87441dcf9fd71ea9337c6b56867e04e0df37  0.0s
+ => => exporting config sha256:17d01907e8d52c3f5c73fbbc29efe42d55f4dadaa9d834da4c6b8cff  0.0s
+ => => exporting attestation manifest sha256:a673d9e8946bf4fa7bfc8d5c5b0f36e3f157beaeea  0.0s
+ => => exporting manifest list sha256:308d43a00821364c3910cc8d271c17dafdfeab99c28a182eb  0.0s
+ => => naming to docker.io/library/flask-app:v1                                          0.0s
+ => => unpacking to docker.io/library/flask-app:v1                                       0.2s
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice5$
+
+
+5.5
+
+5.6
+
+5.7
 
