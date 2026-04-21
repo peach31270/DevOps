@@ -526,6 +526,72 @@ security features and capabilities please refer to
 Sur un réseau bridge personnalisé, Docker intègre un serveur DNS interne automatique. Quand on crée un conteneur avec --name serveur-web, Docker enregistre ce nom dans son DNS. N'importe quel autre conteneur sur le même réseau peut donc le joindre par son nom, sans connaître son IP. Sur le bridge par défaut, ce DNS n'existe pas. Du coup cela nous permet d'avoir acces au site du serveur-web de puis le client.
 
 4.5
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice4$ docker run -it --name client-externe  alpine sh
+/ # wget -qO- http://serveur-web
+wget: bad address 'serveur-web'
+/ # exit
 
+N'ayant pas spécifié de réseau, il sera monté en mode bridge par défaut et ne pourra donc pas communiquer avec les autres conteneurs, car ils ne sont pas sur le même réseau. De plus, le bridge par défaut n'a pas de DNS, donc il ne pourra pas résoudre serveur-web.
+
+4.6
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice4$ docker network connect mon-reseau client-externe
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice4$ docker start -ai client-externe
+/ # wget -qO- http://serveur-web
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, nginx is successfully installed and working.
+Further configuration is required for the web server, reverse proxy,
+API gateway, load balancer, content cache, or other features.</p>
+
+<p>For online documentation and support please refer to
+<a href="https://nginx.org/">nginx.org</a>.<br/>
+To engage with the community please visit
+<a href="https://community.nginx.org/">community.nginx.org</a>.<br/>
+For enterprise grade support, professional services, additional
+security features and capabilities please refer to
+<a href="https://f5.com/nginx">f5.com/nginx</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+/ #
+
+4.7
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice4$ docker stop serveur-web client client-externe
+serveur-web
+client
+client-externe
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice4$ docker rm serveur-web client client-externe
+serveur-web
+client
+client-externe
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice4$ docker network rm mon-reseau
+mon-reseau
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice4$ docker ps -a
+CONTAINER ID   IMAGE                           COMMAND                  CREATED        STATUS                    PORTS                                                             NAMES
+5c58589a87ee   nginx:alpine                    "/docker-entrypoint.…"   15 hours ago   Up 15 hours               0.0.0.0:8081->80/tcp, [::]:8081->80/tcp                           nginx-bind
+803ef58dfac4   hello-world                     "/hello"                 21 hours ago   Exited (0) 21 hours ago                                                                     peaceful_gates
+efcfb974fbc4   portainer/portainer-ce:latest   "/portainer"             2 weeks ago    Up 21 hours               8000/tcp, 9443/tcp, 0.0.0.0:9000->9000/tcp, [::]:9000->9000/tcp   portainer
+6f17d67181ca   nginx:latest                    "/docker-entrypoint.…"   2 weeks ago    Up 14 hours               0.0.0.0:80->80/tcp, [::]:80->80/tcp                               nginx-server
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice4$ docker network ls
+NETWORK ID     NAME             DRIVER    SCOPE
+94f8779f5e15   bridge           bridge    local
+df52c044dfa5   host             host      local
+5c403b0e1900   none             null      local
+2e737d3562e3   ubuntu_default   bridge    local
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice4$
+
+
+Exercice 5 : 
 
 
