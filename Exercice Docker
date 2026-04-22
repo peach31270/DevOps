@@ -868,9 +868,39 @@ Le compteur ne repart pas de zéro : il a sauvegardé l'information. Le volume r
 
 
 6.8
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice6$ docker compose logs -f
+redis-1  | 1:C 22 Apr 2026 11:53:14.987 # WARNING Memory overcommit must be enabled! Without it, a background save or replication may fail under low memory condition. Being disabled, it can also cause failures without low memory condition, see https://github.com/jemalloc/jemalloc/issues/1328. To fix this issue add 'vm.overcommit_memory = 1' to /etc/sysctl.conf and then reboot or run the command 'sysctl vm.overcommit_memory=1' for this to take effect.
+redis-1  | 1:C 22 Apr 2026 11:53:14.987 * oO0OoO0OoO0Oo Redis is starting oO0OoO0OoO0Oo
+redis-1  | 1:C 22 Apr 2026 11:53:14.987 * Redis version=7.4.8, bits=64, commit=00000000, modified=0, pid=1, just started
+redis-1  | 1:C 22 Apr 2026 11:53:14.987 # Warning: no config file specified, using the default config. In order to specify a config file use redis-server /path/to/redis.conf
+redis-1  | 1:M 22 Apr 2026 11:53:14.987 * Increased maximum number of open files to 10032 (it was originally set to 1024).
+redis-1  | 1:M 22 Apr 2026 11:53:14.988 * monotonic clock: POSIX clock_gettime
+redis-1  | 1:M 22 Apr 2026 11:53:14.988 * Running mode=standalone, port=6379.
+redis-1  | 1:M 22 Apr 2026 11:53:14.989 * Server initialized
+redis-1  | 1:M 22 Apr 2026 11:53:14.989 * Loading RDB produced by version 7.4.8
+redis-1  | 1:M 22 Apr 2026 11:53:14.989 * RDB age 21 seconds
+redis-1  | 1:M 22 Apr 2026 11:53:14.989 * RDB memory usage when created 0.98 Mb
+redis-1  | 1:M 22 Apr 2026 11:53:14.989 * Done loading RDB, keys loaded: 1, keys expired: 0.
+redis-1  | 1:M 22 Apr 2026 11:53:14.989 * DB loaded from disk: 0.000 seconds
+redis-1  | 1:M 22 Apr 2026 11:53:14.989 * Ready to accept connections tcp
+web-1    |  * Serving Flask app 'app.py'
+web-1    |  * Debug mode: off
+web-1    | WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+web-1    |  * Running on all addresses (0.0.0.0)
+web-1    |  * Running on http://127.0.0.1:5000
+web-1    |  * Running on http://172.19.0.3:5000
+web-1    | Press CTRL+C to quit
+web-1    | 172.19.0.1 - - [22/Apr/2026 11:53:18] "GET / HTTP/1.1" 200 -
+web-1    | 172.19.0.1 - - [22/Apr/2026 11:53:20] "GET / HTTP/1.1" 200 -
+^C
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice6$
 
 
 6.9
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice6$ docker compose exec web sh
+# ^C
+# exit
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice6$
 
 
 6.10
