@@ -1001,12 +1001,118 @@ security features and capabilities please refer to
 
 
 7.6
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice7$ docker compose config
+name: exercice7
+services:
+  app:
+    environment:
+      APP_ENV: development
+    image: nginx:alpine
+    networks:
+      default: null
+    ports:
+      - mode: ingress
+        target: 80
+        published: "8080"
+        protocol: tcp
+  db:
+    environment:
+      POSTGRES_DB: myapp
+      POSTGRES_PASSWORD: secret123
+      POSTGRES_USER: admin
+    image: postgres:16-alpine
+    networks:
+      default: null
+networks:
+  default:
+    name: exercice7_default
 
 
 7.7
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice7$ docker compose down
+[+] down 3/3
+ ✔ Container exercice7-db-1  Removed                                         0.2s
+ ✔ Container exercice7-app-1 Removed                                         0.2s
+ ✔ Network exercice7_default Removed                                         0.1s
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice7$ APP_PORT=9999 docker compose up -d
+[+] up 3/3
+ ✔ Network exercice7_default Created                                         0.0s
+ ✔ Container exercice7-db-1  Started                                         0.2s
+ ✔ Container exercice7-app-1 Started                                         0.3s
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice7$ curl http://localhost:9999
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, nginx is successfully installed and working.
+Further configuration is required for the web server, reverse proxy,
+API gateway, load balancer, content cache, or other features.</p>
+
+<p>For online documentation and support please refer to
+<a href="https://nginx.org/">nginx.org</a>.<br/>
+To engage with the community please visit
+<a href="https://community.nginx.org/">community.nginx.org</a>.<br/>
+For enterprise grade support, professional services, additional
+security features and capabilities please refer to
+<a href="https://f5.com/nginx">f5.com/nginx</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice7$ curl http://localhost:8080
+curl: (7) Failed to connect to localhost port 8080 after 0 ms: Couldn't connect to server
 
 
 7.8
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice7$ vi .env
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice7$ cat .env
+APP_PORT=9090
+APP_ENV=development
+POSTGRES_USER=admin
+POSTGRES_PASSWORD=secret123
+POSTGRES_DB=myapp
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice7$ docker compose up -d
+[+] up 3/3
+ ✔ Network exercice7_default Created                                         0.0s
+ ✔ Container exercice7-app-1 Started                                         0.3s
+ ✔ Container exercice7-db-1  Started                                         0.2s
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice7$ curl http://localhost:9090
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, nginx is successfully installed and working.
+Further configuration is required for the web server, reverse proxy,
+API gateway, load balancer, content cache, or other features.</p>
 
+<p>For online documentation and support please refer to
+<a href="https://nginx.org/">nginx.org</a>.<br/>
+To engage with the community please visit
+<a href="https://community.nginx.org/">community.nginx.org</a>.<br/>
+For enterprise grade support, professional services, additional
+security features and capabilities please refer to
+<a href="https://f5.com/nginx">f5.com/nginx</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+
+on a en premier 1 les variables shell puis le fichier .env et enfin les valeur par défaut dans compose.yaml
 
 7.9
