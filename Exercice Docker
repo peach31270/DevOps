@@ -758,18 +758,120 @@ redis==5.0.8
 
 
 6.3
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice6/app$ vi Dockerfile
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice6/app$ cat Dockerfile
+FROM python:3.12-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 5000
+
+ENV FLASK_APP=app.py
+
+CMD ["flask", "run", "--host=0.0.0.0"]
+
 
 6.4
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice6$ vi compose.yml
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice6$ cat compose.yml
+services:
+  web:
+    build: ./app
+    ports:
+      - "5000:5000"
+    environment:
+      - REDIS_HOST=redis
+    depends_on:
+      - redis
+
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis-data:/data
+
+volumes:
+  redis-data:
+
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice6$
+
 
 6.5
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice6$ docker compose up -d --build
+[+] Building 0.8s (12/12) FINISHED
+ => [internal] load local bake definitions                                 0.0s
+ => => reading from stdin 510B                                             0.0s
+ => [internal] load build definition from Dockerfile                       0.0s
+ => => transferring dockerfile: 236B                                       0.0s
+ => [internal] load metadata for docker.io/library/python:3.12-slim        0.3s
+ => [internal] load .dockerignore                                          0.0s
+ => => transferring context: 2B                                            0.0s
+ => [1/5] FROM docker.io/library/python:3.12-slim@sha256:520153e2deb35960  0.0s
+ => => resolve docker.io/library/python:3.12-slim@sha256:520153e2deb35960  0.0s
+ => [internal] load build context                                          0.0s
+ => => transferring context: 93B                                           0.0s
+ => CACHED [2/5] WORKDIR /app                                              0.0s
+ => CACHED [3/5] COPY requirements.txt .                                   0.0s
+ => CACHED [4/5] RUN pip install --no-cache-dir -r requirements.txt        0.0s
+ => CACHED [5/5] COPY . .                                                  0.0s
+ => exporting to image                                                     0.3s
+ => => exporting layers                                                    0.0s
+ => => exporting manifest sha256:a57e953fb87f347f2db4f2bc2807a8f46c92a74a  0.0s
+ => => exporting config sha256:d0ddd25c1849758ffba41a9042187f473644bd5833  0.0s
+ => => exporting attestation manifest sha256:d8b1732635e5527c5829bb59d636  0.0s
+ => => exporting manifest list sha256:34f8214fe9479bd18c67a1a5832e9df637a  0.0s
+ => => naming to docker.io/library/exercice6-web:latest                    0.0s
+ => => unpacking to docker.io/library/exercice6-web:latest                 0.2s
+ => resolving provenance for metadata file                                 0.0s
+[+] up 4/4
+ ✔ Image exercice6-web         Built                                        0.8s
+ ✔ Network exercice6_default   Created                                      0.0s
+ ✔ Container exercice6-redis-1 Started                                      0.3s
+ ✔ Container exercice6-web-1   Started                                      0.4s
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice6$
+
 
 6.6
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice6$ curl http://localhost:5000
+<h1>Visiteur n°1</h1>ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice6$ curl http://localhost:5000
+<h1>Visiteur n°2</h1>ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice6$ curl http://localhost:5000
+<h1>Visiteur n°3</h1>ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice6$ curl http://localhost:5000
+<h1>Visiteur n°4</h1>ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice6$
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice6$ curl http://localhost:5000/reset
+Compteur remis à zéroubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice6$ curl http://localhost:5000
+<h1>Visiteur n°1</h1>ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice6$
+
+Le compteur s'incrémente. Puis après un reset on peut repartir du début
+
 
 6.7
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice6$ docker compose down
+[+] down 3/3
+ ✔ Container exercice6-web-1   Removed                                     10.2s
+ ✔ Container exercice6-redis-1 Removed                                      0.2s
+ ✔ Network exercice6_default   Removed                                      0.1s
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice6$ docker compose up -d
+[+] up 3/3
+ ✔ Network exercice6_default   Created                                      0.0s
+ ✔ Container exercice6-redis-1 Started                                      0.2s
+ ✔ Container exercice6-web-1   Started                                      0.3s
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice6$ curl http://localhost:5000
+<h1>Visiteur n°2</h1>ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice6$ curl http://localhost:5000
+<h1>Visiteur n°3</h1>ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice6$
+
+Le compteur ne repart pas de zéro : il a sauvegardé l'information. Le volume redis-data permet d'avoir des données persistantes. Il est gérée par Docker
+
 
 6.8
 
+
 6.9
+
 
 6.10
 
