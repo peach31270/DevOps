@@ -892,13 +892,11 @@ web-1    |  * Running on http://172.19.0.3:5000
 web-1    | Press CTRL+C to quit
 web-1    | 172.19.0.1 - - [22/Apr/2026 11:53:18] "GET / HTTP/1.1" 200 -
 web-1    | 172.19.0.1 - - [22/Apr/2026 11:53:20] "GET / HTTP/1.1" 200 -
-^C
 ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice6$
 
 
 6.9
 ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice6$ docker compose exec web sh
-# ^C
 # exit
 ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice6$
 
@@ -916,19 +914,99 @@ ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice6$
 exercice 7 : 
 
 7.1
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice7$ vi .env
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice7$ cat .env
+APP_PORT=8080
+APP_ENV=development
+POSTGRES_USER=admin
+POSTGRES_PASSWORD=secret123
+POSTGRES_DB=myapp
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice7$
+
 
 7.2
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice7$ vi .gitignore
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice7$ cat .gitignore
+.env
+Le fichier .env permet de stocker des variables d'environnement sensibles (mots de passe, clés API, tokens) séparément du code afin de ne pas les exposer dans le dépôt Git.
+
 
 7.3
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice7$ vi .env.example
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice7$ cat .env.example
+APP_PORT=8080
+APP_ENV=development
+POSTGRES_USER=admin
+POSTGRES_PASSWORD=changeme
+POSTGRES_DB=myapp
+.env.example est le fichier à commiter dans Git. Il documente toutes les variables nécessaires au projet sans exposer les vraies valeurs.
+
 
 7.4
 
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice7$ vi compose.yaml
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice7$ cat compose.yaml
+services:
+  app:
+    image: nginx:alpine
+    ports:
+      - "${APP_PORT}:80"
+    environment:
+      - APP_ENV=${APP_ENV}
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+ubuntu@84872d2c-9830-4e43-ade7-474d9a
+
+
 7.5
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice7$ docker compose up -d
+[+] up 16/16
+ ✔ Image postgres:16-alpine  Pulled                                          5.2s
+ ✔ Network exercice7_default Created                                         0.0s
+ ✔ Container exercice7-app-1 Started                                         0.4s
+ ✔ Container exercice7-db-1  Started                                         0.4s
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice7$ curl http://localhost:8080
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+<style>
+html { color-scheme: light dark; }
+body { width: 35em; margin: 0 auto;
+font-family: Tahoma, Verdana, Arial, sans-serif; }
+</style>
+</head>
+<body>
+<h1>Welcome to nginx!</h1>
+<p>If you see this page, nginx is successfully installed and working.
+Further configuration is required for the web server, reverse proxy,
+API gateway, load balancer, content cache, or other features.</p>
+
+<p>For online documentation and support please refer to
+<a href="https://nginx.org/">nginx.org</a>.<br/>
+To engage with the community please visit
+<a href="https://community.nginx.org/">community.nginx.org</a>.<br/>
+For enterprise grade support, professional services, additional
+security features and capabilities please refer to
+<a href="https://f5.com/nginx">f5.com/nginx</a>.</p>
+
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+
 
 7.6
 
+
 7.7
 
+
 7.8
+
 
 7.9
