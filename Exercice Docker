@@ -904,4 +904,11 @@ ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice6$
 
 
 6.10
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice6$ docker compose down -v
+[+] down 4/4
+ ✔ Container exercice6-web-1   Removed                                     10.1s
+ ✔ Container exercice6-redis-1 Removed                                      0.1s
+ ✔ Volume exercice6_redis-data Removed                                      0.0s
+ ✔ Network exercice6_default   Removed                                      0.1s
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice6$
 
