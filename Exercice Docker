@@ -1116,3 +1116,4 @@ security features and capabilities please refer to
 on a en premier 1 les variables shell puis le fichier .env et enfin les valeur par défaut dans compose.yaml
 
 7.9
+Vault ou docker secret 
