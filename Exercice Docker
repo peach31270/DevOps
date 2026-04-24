@@ -1178,17 +1178,129 @@ Les tests ne servent à rien en production - ils augmentent la taille de l'image
 
 
 8.3
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice8$ docker build -t app-optimisee:v1 .
+[+] Building 3.9s (11/11) FINISHED                                docker:default
+ => [internal] load build definition from Dockerfile                        0.0s
+ => => transferring dockerfile: 1.03kB                                      0.0s
+ => [internal] load metadata for docker.io/library/python:3.12-slim         0.7s
+ => [internal] load .dockerignore                                           0.0s
+ => => transferring context: 81B                                            0.0s
+ => [internal] load build context                                           0.0s
+ => => transferring context: 63B                                            0.0s
+ => [builder 1/4] FROM docker.io/library/python:3.12-slim@sha256:46cb7cc28  0.0s
+ => => resolve docker.io/library/python:3.12-slim@sha256:46cb7cc2877e60fbd  0.0s
+ => CACHED [builder 2/4] WORKDIR /app                                       0.0s
+ => [builder 3/4] COPY requirements.txt .                                   0.0s
+ => [builder 4/4] RUN pip install --no-cache-dir --prefix=/install -r requ  2.4s
+ => [stage-1 3/4] COPY --from=builder /install /install                     0.1s
+ => [stage-1 4/4] COPY app.py .                                             0.0s
+ => exporting to image                                                      0.4s
+ => => exporting layers                                                     0.3s
+ => => exporting manifest sha256:9bdb96051b8442e9fcaf4970692c93c32a821c1a5  0.0s
+ => => exporting config sha256:ee1c844295987038b06f229a9f1fbd7ed140eafbab1  0.0s
+ => => exporting attestation manifest sha256:3dd9bb9c6c59cb7871145d71737b3  0.0s
+ => => exporting manifest list sha256:3a16e43d0d825149bb679ff3c0113546abda  0.0s
+ => => naming to docker.io/library/app-optimisee:v1                         0.0s
+ => => unpacking to docker.io/library/app-optimisee:v1                      0.1s
 
 
 8.4
+docker images | grep -E "app-naive|app-optimisee"
+WARNING: This output is designed for human readability. For machine-readable output, please use --format.
+app-naive:v1                    f05716ed7b51       1.62GB          416MB
+app-optimisee:v1                3a16e43d0d82        184MB         44.8MB
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice8$
+
+On gagne plus de 1.4go
 
 
 8.5
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice8$ cat <<'EOF' > Dockerfile
+# ── Stage 1 : builder ──────────────────────────────────────────
+FROM python:3.12-slim AS builder
+
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
+
+# ── Stage 2 : image finale ──────────────────────────────────────
+FROM python:3.12-slim
+
+WORKDIR /app
+
+COPY --from=builder /install /install
+COPY app.py .
+
+ENV PYTHONPATH=/install/lib/python3.12/site-packages
+
+EXPOSE 5000
+
+# Créer un groupe et un utilisateur système sans shell de login
+RUN groupadd --system appuser && \
+    useradd --system --gid appuser --no-create-home appuser
+
+# Donner la propriété du dossier /app à appuser
+RUN chown -R appuser:appuser /app
+
+# Basculer sur l'utilisateur non-root
+USER appuser
+
+CMD ["python", "app.py"]
+EOF
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice8$ docker build -t app-optimisee:v1 .
+[+] Building 1.1s (13/13) FINISHED                                docker:default
+ => [internal] load build definition from Dockerfile                        0.0s
+ => => transferring dockerfile: 963B                                        0.0s
+ => [internal] load metadata for docker.io/library/python:3.12-slim         0.5s
+ => [internal] load .dockerignore                                           0.0s
+ => => transferring context: 81B                                            0.0s
+ => [internal] load build context                                           0.0s
+ => => transferring context: 63B                                            0.0s
+ => [builder 1/4] FROM docker.io/library/python:3.12-slim@sha256:46cb7cc28  0.0s
+ => => resolve docker.io/library/python:3.12-slim@sha256:46cb7cc2877e60fbd  0.0s
+ => CACHED [builder 2/4] WORKDIR /app                                       0.0s
+ => CACHED [builder 3/4] COPY requirements.txt .                            0.0s
+ => CACHED [builder 4/4] RUN pip install --no-cache-dir --prefix=/install   0.0s
+ => CACHED [stage-1 3/6] COPY --from=builder /install /install              0.0s
+ => CACHED [stage-1 4/6] COPY app.py .                                      0.0s
+ => [stage-1 5/6] RUN groupadd --system appuser &&     useradd --system --  0.2s
+ => [stage-1 6/6] RUN chown -R appuser:appuser /app                         0.1s
+ => exporting to image                                                      0.1s
+ => => exporting layers                                                     0.1s
+ => => exporting manifest sha256:c57a17857b127e33f2af28c236ae6039b35b53ca4  0.0s
+ => => exporting config sha256:344a9818e52d35f3b09bfd3b0045290526c3abd2522  0.0s
+ => => exporting attestation manifest sha256:02853c9bccc94a27ce56ac36b057a  0.0s
+ => => exporting manifest list sha256:ca3156db88735392ac4b7653f160cfd9aa55  0.0s
+ => => naming to docker.io/library/app-optimisee:v1                         0.0s
+ => => unpacking to docker.io/library/app-optimisee:v1                      0.0s
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice8$ docker run --rm app-optimisee:v1 whoami
+appuser
 
 
 8.6
-
+Si un attaquant exploite une faille dans l'application et s'échappe de l'isolation du conteneur (via une faille kernel ou une mauvaise configuration), il se retrouve root sur la machine hôte, avec accès à l'ensemble du système.
 
 8.7
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice8$ docker images --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}" | sort -k3 -h -r
+libra                    basic-latest          1.92GB
+app-naive                v1                    1.62GB
+postgres                 16-alpine             395MB
+minio/minio              latest                241MB
+portainer/portainer-ce   latest                240MB
+nginx                    latest                240MB
+exercice6-web            latest                200MB
+flask-app                v1                    197MB
+app-optimisee            v1                    184MB
+libra                    v0.0.3                148MB
+libra                    latest                148MB
+ubuntu                   latest                119MB
+nginx                    alpine                93.5MB
+mon-site                 v2                    92.6MB
+redis                    7-alpine              61.2MB
+libra                    multi-stages-latest   24.6MB
+alpine                   latest                13.1MB
+hello-world              latest                25.9kB
+REPOSITORY               TAG                   SIZE
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice8$
 
 
