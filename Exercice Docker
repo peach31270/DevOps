@@ -1122,9 +1122,59 @@ HashiCorp Vault ou docker secret
 Exercice 8 : 
 
 8.1
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice8$ docker build -f Dockerfile.naive -t app-naive:v1 .
+[+] Building 19.7s (9/9) FINISHED                                 docker:default
+ => [internal] load build definition from Dockerfile.naive                  0.0s
+ => => transferring dockerfile: 143B                                        0.0s
+ => [internal] load metadata for docker.io/library/python:3.12              1.3s
+ => [internal] load .dockerignore                                           0.0s
+ => => transferring context: 34B                                            0.0s
+ => [1/4] FROM docker.io/library/python:3.12@sha256:5b5e75c01e04932ad3ad8  14.3s
+ => => resolve docker.io/library/python:3.12@sha256:5b5e75c01e04932ad3ad87  0.0s
+ => => sha256:c0eb8507c90db627a419d288bba1d7a16d85a81e1c56660a 249B / 249B  0.2s
+ => => sha256:88ae9ec856beb75f06f0b93bcb16dbea57b2793a30 25.70MB / 25.70MB  1.4s
+ => => sha256:5cc9fa59124ce0be0244669b53b390ed287e00cf1248 6.09MB / 6.09MB  0.5s
+ => => sha256:1e1bb20756a85e159dfb7908a2a5c860ac2f2254 236.07MB / 236.07MB  6.1s
+ => => sha256:20d12c8f3f3fbb5bd2b8369adf3213e09d6b33f975 67.79MB / 67.79MB  3.5s
+ => => sha256:5467f93954cfe1451f4333422086d00bd066cf33f4 25.62MB / 25.62MB  1.4s
+ => => sha256:3b32e3bb7338c216b077e95920ae53332d81bd57f4 49.30MB / 49.30MB  2.5s
+ => => extracting sha256:3b32e3bb7338c216b077e95920ae53332d81bd57f4a7393bc  1.5s
+ => => extracting sha256:5467f93954cfe1451f4333422086d00bd066cf33f42112b53  0.7s
+ => => extracting sha256:20d12c8f3f3fbb5bd2b8369adf3213e09d6b33f975462543d  1.9s
+ => => extracting sha256:1e1bb20756a85e159dfb7908a2a5c860ac2f2254254a915d8  5.4s
+ => => extracting sha256:5cc9fa59124ce0be0244669b53b390ed287e00cf1248e1d03  0.2s
+ => => extracting sha256:88ae9ec856beb75f06f0b93bcb16dbea57b2793a30753b21b  0.6s
+ => => extracting sha256:c0eb8507c90db627a419d288bba1d7a16d85a81e1c56660ae  0.0s
+ => [internal] load build context                                           0.0s
+ => => transferring context: 548B                                           0.0s
+ => [2/4] WORKDIR /app                                                      0.3s
+ => [3/4] COPY . .                                                          0.0s
+ => [4/4] RUN pip install -r requirements.txt                               2.5s
+ => exporting to image                                                      1.1s
+ => => exporting layers                                                     0.8s
+ => => exporting manifest sha256:92ba63a1cf08393305b4ad73d3951616e8b1b61b9  0.0s
+ => => exporting config sha256:01a76007412ca148bc0c976bb03a4aa1b0cb19edd27  0.0s
+ => => exporting attestation manifest sha256:f81ea0d12a096435bec6f5f5eff11  0.0s
+ => => exporting manifest list sha256:f05716ed7b51b04a2a6d0520341185623e11  0.0s
+ => => naming to docker.io/library/app-naive:v1                             0.0s
+ => => unpacking to docker.io/library/app-naive:v1                          0.3s
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice8$ docker images app-naive:v1
+                                                             i Info →   U  In Use
+IMAGE          ID             DISK USAGE   CONTENT SIZE   EXTRA
+app-naive:v1   f05716ed7b51       1.62GB          416MB
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice8$
 
 
 8.2
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice8$ cat <<'EOF' > .dockerignore
+tests/
+*.md
+__pycache__/
+*.pyc
+.git
+.env
+EOF
+Les tests ne servent à rien en production - ils augmentent la taille de l'image inutilement
 
 
 8.3
