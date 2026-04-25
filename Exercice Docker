@@ -1543,9 +1543,14 @@ Les données sont bien persistés grace au volume pg-data
 
 
 9.8
-
+Sans condition: service_healthy, Flask démarre avant que PostgreSQL soit prêt et tente immédiatement une connexion à la base. Cela provoque une psycopg2.OperationalError: Connection refused et le conteneur app quitte avec le code 1. Toute la stack s'arrête. Avec condition: service_healthy, Docker attend que le healthcheck pg_isready soit validé avant de démarrer Flask.
 
 9.9
+PostgreSQL n'expose pas son port 5432 sur l'hôte (ports: absent du service db). La base de données est uniquement accessible depuis le réseau Docker interne backend. Seul le service app, connecté à ce même réseau, peut joindre PostgreSQL. Toute tentative de connexion directe depuis l'hôte ou depuis Internet est impossible. Cela réduit significativement la surface d'attaque : même si un attaquant accède à la machine hôte, il ne peut pas se connecter directement à la base sans passer par l'application. C'est une application du principe du moindre privilège.
+
+
+Exercice 10 : 
+
 
 
 
