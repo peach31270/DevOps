@@ -1487,11 +1487,59 @@ networks:
   frontend:
 EOF
 
+9.10
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice9$ cat <<'EOF' > .env
+POSTGRES_USER=admin
+POSTGRES_PASSWORD=secret123
+POSTGRES_DB=myapp
+DB_HOST=db
+DB_USER=admin
+DB_PASSWORD=secret123
+DB_NAME=myapp
+EOF
 
 9.6
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice9$ docker compose up -d
+[+] up 3/3
+ ✔ Container exercice9-db-1    Healthy                                       0.5s
+ ✔ Container exercice9-app-1   Healthy                                       1.0s
+ ✔ Container exercice9-nginx-1 Started                                       0.1s
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice9$ docker compose ps
+NAME                IMAGE                COMMAND                  SERVICE   CREATED          STATUS                    PORTS
+exercice9-app-1     exercice9-app        "python -m flask run…"   app       11 minutes ago   Up 11 minutes (healthy)   5000/tcp
+exercice9-db-1      postgres:16-alpine   "docker-entrypoint.s…"   db        11 minutes ago   Up 11 minutes (healthy)   5432/tcp
+exercice9-nginx-1   nginx:alpine         "/docker-entrypoint.…"   nginx     11 minutes ago   Up 4 seconds
+
+Cela a prix environ 20s au total 
 
 
 9.7
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice9$ curl -X POST http://localhost/visites
+{"total":1}
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice9$ curl -X POST http://localhost/visites
+{"total":2}
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice9$ curl -X POST http://localhost/visites
+{"total":3}
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice9$ curl -X POST http://localhost/visites
+{"total":4}
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice9$ docker compose down
+[+] down 5/5
+ ✔ Container exercice9-nginx-1 Removed                                       0.2s
+ ✔ Container exercice9-app-1   Removed                                      10.2s
+ ✔ Container exercice9-db-1    Removed                                       0.1s
+ ✔ Network exercice9_frontend  Removed                                       0.1s
+ ✔ Network exercice9_backend   Removed                                       0.1s
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice9$ docker compose up -d
+[+] up 5/5
+ ✔ Network exercice9_frontend  Created                                       0.0s
+ ✔ Network exercice9_backend   Created                                       0.0s
+ ✔ Container exercice9-db-1    Healthy                                       5.8s
+ ✔ Container exercice9-app-1   Healthy                                      11.5s
+ ✔ Container exercice9-nginx-1 Started                                      11.6s
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/DevOps/exercice9$ curl -X POST http://localhost/visites
+{"total":5}
+
+Les données sont bien persistés grace au volume pg-data
 
 
 9.8
@@ -1500,6 +1548,6 @@ EOF
 9.9
 
 
-9.10
+
 
 
