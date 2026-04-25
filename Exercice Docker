@@ -1740,11 +1740,24 @@ Risque : n'importe qui ayant accès au daemon Docker peut lire ces valeurs en cl
 
 
 10.8
+HEALTHCHECK
 
+Différence :
+
+    Dockerfile → intégré directement dans l'image, actif partout où elle est utilisée
+
+    compose.yaml → spécifique à cet environnement Compose
+
+Lequel a la priorité ? → compose.yaml écrase toujours le Dockerfile.
 
 
 10.9
+ordre optimal : 
+COPY requirements.txt .             # change rarement → cache stable
+RUN pip install -r requirements.txt # cache réutilisé si requirements.txt inchangé
+COPY . .                            # code source en dernier
 
+Raisonnement : Docker invalide le cache d'une couche dès qu'elle change, et recalcule toutes les couches suivantes. En isolant requirements.txt, un simple changement de code ne déclenche pas une réinstallation des dépendances.
 
 
 10.10
