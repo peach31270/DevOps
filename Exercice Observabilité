@@ -75,4 +75,60 @@ global:
     environment: lab
 
 
+exercice 3 : 
+
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/prometheus$ docker run -d --name node-exporter -p 9100:9100 prom/node-exporter:latest
+Unable to find image 'prom/node-exporter:latest' locally
+latest: Pulling from prom/node-exporter
+a6680b927350: Pull complete
+fe82e83000f4: Pull complete
+a2243411ec8e: Pull complete
+Digest: sha256:e9cff4fc67b1818f8c97adb115b9f12c9a54b533de86765d4a0effc01b357205
+Status: Downloaded newer image for prom/node-exporter:latest
+462be04620b619c28c0067dd9398ff5bce27f162536d83838e17a36fb538c8e0
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/prometheus$ ip addr show docker0 | grep "inet "
+    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/prometheus$ vi ~/prometheus/prometheus.yml
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/prometheus$ cat ~/prometheus/prometheus.yml
+global:
+  scrape_interval: 10s
+  evaluation_interval: 15s
+  external_labels:
+    environment: lab
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+  - job_name: 'node'
+    static_configs:
+      - targets: ['172.17.0.1:9090']
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/prometheus$ docker rm -f prometheus
+prometheus
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/prometheus$ docker run -d \
+  --name prometheus \
+  -p 9090:9090 \
+  -v ~/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml \
+  prom/prometheus:latest \
+  --config.file=/etc/prometheus/prometheus.yml \
+  --web.enable-lifecycle
+2360219e5ae50d889b97635feb8d46dc114704f77516028213911c6f3130f94f
+valeur dans node_cpu_seconds_total : 
+node_cpu_seconds_total{cpu="0", instance="172.17.0.1:9100", job="node", mode="idle"}	3272342.24
+node_cpu_seconds_total{cpu="0", instance="172.17.0.1:9100", job="node", mode="iowait"}	125.6
+node_cpu_seconds_total{cpu="0", instance="172.17.0.1:9100", job="node", mode="irq"}	0
+node_cpu_seconds_total{cpu="0", instance="172.17.0.1:9100", job="node", mode="nice"}	88.52
+node_cpu_seconds_total{cpu="0", instance="172.17.0.1:9100", job="node", mode="softirq"}	57.33
+node_cpu_seconds_total{cpu="0", instance="172.17.0.1:9100", job="node", mode="steal"}	33.07
+node_cpu_seconds_total{cpu="0", instance="172.17.0.1:9100", job="node", mode="system"}	3808.03
+node_cpu_seconds_total{cpu="0", instance="172.17.0.1:9100", job="node", mode="user"}	5036.11
+node_cpu_seconds_total{cpu="1", instance="172.17.0.1:9100", job="node", mode="idle"}	3272333.86
+node_cpu_seconds_total{cpu="1", instance="172.17.0.1:9100", job="node", mode="iowait"}	129.97
+node_cpu_seconds_total{cpu="1", instance="172.17.0.1:9100", job="node", mode="irq"}	0
+node_cpu_seconds_total{cpu="1", instance="172.17.0.1:9100", job="node", mode="nice"}	69.48
+node_cpu_seconds_total{cpu="1", instance="172.17.0.1:9100", job="node", mode="softirq"}	58.84
+node_cpu_seconds_total{cpu="1", instance="172.17.0.1:9100", job="node", mode="steal"}	31.02
+node_cpu_seconds_total{cpu="1", instance="172.17.0.1:9100", job="node", mode="system"}	3923.11
+node_cpu_seconds_total{cpu="1", instance="172.17.0.1:9100", job="node", mode="user"}	4954.36
+
 
