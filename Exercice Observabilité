@@ -1,1 +1,33 @@
 exercice 1 : 
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~$ docker pull prom/prometheus:latest
+latest: Pulling from prom/prometheus
+df0231abac1e: Pull complete
+2acf9a40b14f: Pull complete
+27baa147e9fa: Pull complete
+ac03b73ed425: Pull complete
+f591ea4658bd: Pull complete
+e7f02ac1f456: Pull complete
+612087d42eba: Pull complete
+2d001a504b81: Pull complete
+bd1a7d2e0737: Pull complete
+69294359b56a: Pull complete
+Digest: sha256:e4254400b85610324913f0dc4acf92603d9984e7519414c5a12811aa6146acc3
+Status: Downloaded newer image for prom/prometheus:latest
+docker.io/prom/prometheus:latest
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~$ docker run -d --name prometheus -p 9090:9090 prom/prometheus:latest
+8845703d37e08274aeaf40a319d69217d2b39d14f3f261ff258b1d8d045068aa
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~$
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~$ docker ps
+CONTAINER ID   IMAGE                           COMMAND                  CREATED         STATUS         PORTS                                                             NAMES
+8845703d37e0   prom/prometheus:latest          "/bin/prometheus --c…"   8 minutes ago   Up 8 minutes   0.0.0.0:9090->9090/tcp, [::]:9090->9090/tcp                       prometheus
+efcfb974fbc4   portainer/portainer-ce:latest   "/portainer"             5 weeks ago     Up 2 weeks     8000/tcp, 9443/tcp, 0.0.0.0:9000->9000/tcp, [::]:9000->9000/tcp   portainer
+6f17d67181ca   nginx:latest                    "/docker-entrypoint.…"   5 weeks ago     Up 2 weeks     0.0.0.0:80->80/tcp, [::]:80->80/tcp                               nginx-server
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~$
+dans la version v3 le chemin de stockage n'est plus afficher comme avant: 
+msg="Starting TSDB ..."           ← la base de données démarre
+msg="TSDB started"                ← elle est prête
+msg="filesystem information" fs_type=EXT4_SUPER_MAGIC  ← stockage sur disque EXT4
+msg="Loading configuration file" filename=/etc/prometheus/prometheus.yml
+msg="Server is ready to receive web requests."
+
+exercice 2 : 
