@@ -213,3 +213,72 @@ tee ~/prometheus/sd/targets.json << 'EOF'
 ]
 EOF
 il est bien apparu sans recharger Prometheus : Error scraping target: Get "http://172.17.0.1:9999/metrics": dial tcp 172.17.0.1:9999: connect: connection refused
+
+exercice 5 : 
+
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/demo-api$ mkdir -p ~/prometheus/rules
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/demo-api$ tee ~/prometheus/rules/api_rules.yml << 'EOF'
+groups:
+  - name: api_recording_rules
+    interval: 30s
+    rules:
+      - record: job:http_requests:rate5m
+        expr: sum(rate(demo_http_requests_total[5m])) by (job)
+EOF
+groups:
+  - name: api_recording_rules
+    interval: 30s
+    rules:
+      - record: job:http_requests:rate5m
+        expr: sum(rate(demo_http_requests_total[5m])) by (job)
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/demo-api$
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/demo-api$ tee ~/prometheus/prometheus.yml << 'EOF'
+global:
+  scrape_interval: 10s
+  evaluation_interval: 15s
+  external_labels:
+    environment: lab
+
+rule_files:
+  - '/etc/prometheus/rules/*.yml'
+
+scrape_configs:
+  - job_name: 'autodiscovery'
+    file_sd_configs:
+      - files:
+          - '/etc/prometheus/sd/*.json'
+        refresh_interval: 5s
+EOF
+global:
+  scrape_interval: 10s
+  evaluation_interval: 15s
+  external_labels:
+    environment: lab
+
+rule_files:
+  - '/etc/prometheus/rules/*.yml'
+
+scrape_configs:
+  - job_name: 'autodiscovery'
+    file_sd_configs:
+      - files:
+          - '/etc/prometheus/sd/*.json'
+        refresh_interval: 5s
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/demo-api$
+ubuntu@84872d2c-9830-4e43-ade7-474d9a609dec-0:~/demo-api$ docker rm -f prometheus
+
+docker run -d \
+  --name prometheus \
+  -p 9090:9090 \
+  -v ~/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml \
+  -v ~/prometheus/sd:/etc/prometheus/sd \
+  -v ~/prometheus/rules:/etc/prometheus/rules \
+  prom/prometheus:latest \
+  --config.file=/etc/prometheus/prometheus.yml \
+  --web.enable-lifecycle
+prometheus
+2d086ab33a4703a252151974f0b2f5cb6e84d403d8ea2b08860ade2974f3e71f
+
+job:http_requests:rate5m{job="demo-api"}	0.5572245238095238
+
+
